@@ -53,6 +53,7 @@ public:
   // sorting and searching method declarations go here
   void merge(const List& lower, const List& upper);
   void sort();
+  int search(const std::string find, int start, int end);
 
 private:
   /// @brief the current size of the list of integer values

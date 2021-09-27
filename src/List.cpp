@@ -253,6 +253,47 @@ void List::sort()
   }
 }
 
+/** @brief binary search
+ *
+ * This function uses the Binary Search algorithm to find a
+ * value in this List
+ *
+ * @param find std::string value to be found in this List
+ *
+ * @param start begining index of the search
+ *
+ * @param end ending index of the search. This index will be included.
+ *
+ * @returns the index of the found value. If the value wasnt found
+ *    this function returns -1.
+ */
+int List::search(const std::string find, int start, int end)
+{
+  if (this->size <= 0 || start > end)
+  {
+    return -1;
+  }
+
+  int midpoint = (end - start) / 2 + start;
+
+  if (this->operator[](midpoint) == find)
+  {
+    return midpoint;
+  }
+  else if (this->operator[](midpoint) < find)
+  {
+    return this->search(find, midpoint + 1, end);
+  }
+  else if (this->operator[](midpoint) > find)
+  {
+    return this->search(find, start, midpoint - 1);
+  }
+  else
+  {
+    return -1;
+  }
+}
+
 /** @brief Size accessor
  *
  * Accessor method to get the current size of this List of integers.
