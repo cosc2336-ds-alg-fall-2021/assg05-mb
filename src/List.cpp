@@ -132,8 +132,10 @@ List::List(const List& list, int start, int end)
   if (start >= list.size || end >= list.size)
   {
     ostringstream out;
-    out << "Error: illegal sub-List size declaration, sub-List indexes were at, start: " << start << " and end: " << end
-        << "with parent List size being: " << list.size;
+    out << "Error: illegal sub-List size declaration, sub-List indexes were at, " << endl
+        << "\tstart: " << start << " and end: " << end << endl
+        << "\twith parent List size being: " << list.size << endl
+        << endl;
 
     throw ListMemoryBoundsException(out.str());
   }
@@ -161,6 +163,75 @@ List::~List()
   if (values != nullptr)
   {
     delete[] values;
+  }
+}
+
+/** @brief merge to Lists into this one
+ *
+ * This is a function that will merge to Lists into this list.
+ * Values from the other Lists will be merged into this list
+ * in accending order, assming the inputted Lists are sorted.
+ *
+ * @param lower This is a List of the lower values to be merged
+ *
+ * @param upper This is a List of the upper values to be merged
+ *
+ * @throws ListMemoryBoundsException if the sizes of the upper and
+ *    lower Lists are greater than this List.
+ */
+void List::merge(const List& lower, const List& upper)
+{
+  try
+  {
+    if (lower.size + upper.size > this->size)
+    {
+      ostringstream out;
+
+      throw ListMemoryBoundsException(out.str());
+    }
+
+    int lowerIndex = 0, upperIndex = 0;
+
+    for (int index = 0; index < this->size; index++)
+    {
+      if (lowerIndex < lower.size && upperIndex < upper.size)
+      {
+        if (lower.getAtIndex(lowerIndex) < upper.getAtIndex(upperIndex))
+        {
+          this->operator[](index) = lower.getAtIndex(lowerIndex);
+          lowerIndex++;
+        }
+        else
+        {
+          this->operator[](index) = upper.getAtIndex(upperIndex);
+          upperIndex++;
+        }
+      }
+      else if (lowerIndex >= lower.size)
+      {
+        this->operator[](index) = upper.getAtIndex(upperIndex);
+        upperIndex++;
+      }
+      else if (upperIndex >= upper.size)
+      {
+        this->operator[](index) = lower.getAtIndex(lowerIndex);
+        lowerIndex++;
+      }
+    }
+  }
+  catch (std::bad_alloc& exception)
+  {
+    std::cerr << "caught std::bad_alloc with, " << endl
+              << endl
+              << "lower : " << endl
+              << lower << endl
+              << endl
+              << "upper : " << endl
+              << upper << endl
+              << endl
+              << "this : " << endl
+              << this->str() << endl
+              << endl;
   }
 }
 
@@ -241,6 +312,19 @@ string& List::operator[](int index)
   }
 
   // otherwise it is safe to return the reference to this value
+  return values[index];
+}
+
+/** @brief getter for const Lists
+ *
+ * This method returns a copy of the value at the given index
+ *
+ * @param index index location to be returned
+ *
+ * @returns a std::string
+ */
+string List::getAtIndex(int index) const
+{
   return values[index];
 }
 

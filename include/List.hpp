@@ -37,12 +37,13 @@ public:
   List(int size = 0);                         // default constructor
   List(int size, string values[]);            // standard constructor
   List(const List& list);                     // copy constructor
-  List(const List &list, int start, int end); // sub-List constructor
+  List(const List& list, int start, int end); // sub-List constructor
   ~List();                                    // destructor
 
   // accessor methods declarations go here
   int getSize() const;
   string str() const;
+  string getAtIndex(int index) const;
 
   // overloaded operators
   string& operator[](int index);
@@ -50,6 +51,8 @@ public:
   friend ostream& operator<<(ostream& out, const List& rhs);
 
   // sorting and searching method declarations go here
+  void merge(const List& lower, const List& upper);
+  void sort();
 
 private:
   /// @brief the current size of the list of integer values
