@@ -625,7 +625,7 @@ TEST_CASE("<List> implement search member function", "[task4]")
 
 /** Task 5: implement the isSorted() member function
  */
-/*
+//*
 TEST_CASE("<List> implement isSorted member function", "[task5]")
 {
   SECTION("test list of size 0 and 1")
@@ -675,11 +675,11 @@ TEST_CASE("<List> implement isSorted member function", "[task5]")
     CHECK(l1.isSorted());
   }
 }
-*/
+//*/
 
 /** Task 5: implement public/private search API
  */
-/*
+//*
 TEST_CASE("<List> implement public/private search member function", "[task5-2]")
 {
   SECTION("test base case search, search empty list should fail")
@@ -737,4 +737,4 @@ TEST_CASE("<List> implement public/private search member function", "[task5-2]")
     CHECK(result == NOT_FOUND);
   }
 }
-*/
+//*/

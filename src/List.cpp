@@ -253,7 +253,7 @@ void List::sort()
   }
 }
 
-/** @brief binary search
+/** @brief binary search with range
  *
  * This function uses the Binary Search algorithm to find a
  * value in this List
@@ -292,6 +292,46 @@ int List::search(const std::string find, int start, int end)
   {
     return -1;
   }
+}
+
+/** @brief checks if sorted
+ * 
+ * This function iteratively checks this List to see if it is sorted
+ * 
+ * @returns a boolean of if this List is sorted
+ */
+bool List::isSorted()
+{
+  for (int index = 0; index < this->size - 1; index++)
+  {
+    if (this->operator[](index) > this->operator[](index + 1))
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/** @brief binary search
+ *
+ * This function uses the Binary Search algorithm to find a
+ * value in this List. This function will also sort the List
+ * if it hasnt been already.
+ *
+ * @param find std::string value to be found in this List
+ * 
+ * @returns the index of the found value. If the value wasnt found
+ *    this function returns -1.
+ */
+int List::search(std::string find)
+{
+  if (!this->isSorted())
+  {
+    this->sort();
+  }
+
+  return this->search(find, 0, this->size - 1);
 }
 
 /** @brief Size accessor

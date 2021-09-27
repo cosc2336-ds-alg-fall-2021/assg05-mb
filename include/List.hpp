@@ -54,6 +54,8 @@ public:
   void merge(const List& lower, const List& upper);
   void sort();
   int search(const std::string find, int start, int end);
+  int search(const std::string find);
+  bool isSorted();
 
 private:
   /// @brief the current size of the list of integer values
