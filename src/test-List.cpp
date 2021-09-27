@@ -418,7 +418,7 @@ TEST_CASE("<List> implement merge member function", "[task2]")
 
 /** Task 3: implement the recursive sort member function
  */
-/*
+//*
 TEST_CASE("<List> implement sort member function", "[task3]")
 {
   SECTION("test base case sorts")

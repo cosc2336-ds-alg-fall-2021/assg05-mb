@@ -235,6 +235,24 @@ void List::merge(const List& lower, const List& upper)
   }
 }
 
+/** @brief merge sort function
+ *
+ * This function sorts this List using the Merge Sort algorithm
+ */
+void List::sort()
+{
+  if (this->size > 1)
+  {
+    List lowerTemp = List(*this, 0, this->size / 2 - 1);
+    List upperTemp = List(*this, this->size / 2, this->size - 1);
+
+    lowerTemp.sort();
+    upperTemp.sort();
+
+    this->merge(lowerTemp, upperTemp);
+  }
+}
+
 /** @brief Size accessor
  *
  * Accessor method to get the current size of this List of integers.
