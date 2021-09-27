@@ -2,12 +2,12 @@
  * @brief Implementations of member functions of the List
  *   of strings class for the Assignment Sorting and Searching
  *
- * @author Jane Programmer
- * @note   cwid : 123 45 678
- * @note   class: COSC 2336, Summer 2021
+ * @author Michael Beaty
+ * @note   cwid : 50260848
+ * @note   class: COSC 2336, Fall 2021
  * @note   ide  : VSCode Server 3.9.3, Gnu Development Tools
  * @note   assg : Assignment Sorting and Searching
- * @date   June 1, 2021
+ * @date   9/27/21
  *
  * Implementations of a List of strings ADT.  Sort of a preview
  * of some of the data structures and abstract data types we
@@ -98,6 +98,53 @@ List::List(const List& list)
   for (int index = 0; index < size; index++)
   {
     values[index] = list.values[index];
+  }
+}
+
+/** @brief sub-List constructor
+ *
+ * Provide a sub-List constructor for the List class.  A sub-List
+ * constructor will be invoked whenver you assign a continuous range
+ * of indexes of a List to another List.
+ *
+ * @param list The other List type we are to make a copy of in this
+ *    constructor.
+ *
+ * @param start this is the value for the starting index of the List
+ *    range to be assigned
+ *
+ * @param end this is the value for the ending index of the List
+ *    range to be assigned. This value will be included in the sub-List.
+ *
+ * @throws ListMemoryBoundsException if a request for an index beyond
+ *   the end of the List (or less than 0) is made.
+ */
+List::List(const List& list, int start, int end)
+{
+  if (end < 0 || start < 0)
+  {
+    ostringstream out;
+    out << "Error: illegal sub-List size declaration, tried to start sub-List at: " << start << " and end sub-List at: " << end;
+
+    throw ListMemoryBoundsException(out.str());
+  }
+
+  if (start >= list.size || end >= list.size)
+  {
+    ostringstream out;
+    out << "Error: illegal sub-List size declaration, sub-List indexes were at, start: " << start << " and end: " << end
+        << "with parent List size being: " << list.size;
+
+    throw ListMemoryBoundsException(out.str());
+  }
+
+  size = end - start;
+
+  values = new string[++size];
+
+  for (int index = 0; index < size; index++)
+  {
+    values[index] = list.values[index + start];
   }
 }
 
