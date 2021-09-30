@@ -181,57 +181,40 @@ List::~List()
  */
 void List::merge(const List& lower, const List& upper)
 {
-  try
+  if (lower.size + upper.size > this->size)
   {
-    if (lower.size + upper.size > this->size)
+    ostringstream out;
+
+    throw ListMemoryBoundsException(out.str());
+  }
+
+  int lowerIndex = 0, upperIndex = 0;
+
+  for (int index = 0; index < this->size; index++)
+  {
+    if (lowerIndex < lower.size && upperIndex < upper.size)
     {
-      ostringstream out;
-
-      throw ListMemoryBoundsException(out.str());
-    }
-
-    int lowerIndex = 0, upperIndex = 0;
-
-    for (int index = 0; index < this->size; index++)
-    {
-      if (lowerIndex < lower.size && upperIndex < upper.size)
-      {
-        if (lower.getAtIndex(lowerIndex) < upper.getAtIndex(upperIndex))
-        {
-          this->operator[](index) = lower.getAtIndex(lowerIndex);
-          lowerIndex++;
-        }
-        else
-        {
-          this->operator[](index) = upper.getAtIndex(upperIndex);
-          upperIndex++;
-        }
-      }
-      else if (lowerIndex >= lower.size)
-      {
-        this->operator[](index) = upper.getAtIndex(upperIndex);
-        upperIndex++;
-      }
-      else if (upperIndex >= upper.size)
+      if (lower.getAtIndex(lowerIndex) < upper.getAtIndex(upperIndex))
       {
         this->operator[](index) = lower.getAtIndex(lowerIndex);
         lowerIndex++;
       }
+      else
+      {
+        this->operator[](index) = upper.getAtIndex(upperIndex);
+        upperIndex++;
+      }
     }
-  }
-  catch (std::bad_alloc& exception)
-  {
-    std::cerr << "caught std::bad_alloc with, " << endl
-              << endl
-              << "lower : " << endl
-              << lower << endl
-              << endl
-              << "upper : " << endl
-              << upper << endl
-              << endl
-              << "this : " << endl
-              << this->str() << endl
-              << endl;
+    else if (lowerIndex >= lower.size && upperIndex < upper.size)
+    {
+      this->operator[](index) = upper.getAtIndex(upperIndex);
+      upperIndex++;
+    }
+    else if (upperIndex >= upper.size && lowerIndex < lower.size)
+    {
+      this->operator[](index) = lower.getAtIndex(lowerIndex);
+      lowerIndex++;
+    }
   }
 }
 
