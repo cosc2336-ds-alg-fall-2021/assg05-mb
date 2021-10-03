@@ -1,11 +1,12 @@
 /** @file List.hpp
  * @brief Declarations of List class for Assignment Searching and Sorting
  *
- * @author Jane Programmer
- * @note   class: COSC 2336, Summer 2021
+ * @author Michael Beaty
+ * @note   cwid : 50260848
+ * @note   class: COSC 2336, Fall 2021
  * @note   ide  : VSCode Server 3.9.3, Gnu Development Tools
  * @note   assg : Assignment Sorting and Searching
- * @date   June 1, 2021
+ * @date   9/27/21
  *
  * Definitions of a basic List of integers.  Sort of a preview
  * of some of the data structures and abstract data types we
@@ -33,14 +34,16 @@ class List
 {
 public:
   // constructors and destructors
-  List(int size = 0);              // default constructor
-  List(int size, string values[]); // standard constructor
-  List(const List& list);          // copy constructor
-  ~List();                         // destructor
+  List(int size = 0);                         // default constructor
+  List(int size, string values[]);            // standard constructor
+  List(const List& list);                     // copy constructor
+  List(const List& list, int start, int end); // sub-List constructor
+  ~List();                                    // destructor
 
   // accessor methods declarations go here
   int getSize() const;
   string str() const;
+  string getAtIndex(int index) const;
 
   // overloaded operators
   string& operator[](int index);
@@ -48,6 +51,11 @@ public:
   friend ostream& operator<<(ostream& out, const List& rhs);
 
   // sorting and searching method declarations go here
+  void merge(const List& lower, const List& upper);
+  void sort();
+  int search(const std::string find, int start, int end);
+  int search(const std::string find);
+  bool isSorted();
 
 private:
   /// @brief the current size of the list of integer values

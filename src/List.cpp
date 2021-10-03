@@ -2,12 +2,12 @@
  * @brief Implementations of member functions of the List
  *   of strings class for the Assignment Sorting and Searching
  *
- * @author Jane Programmer
- * @note   cwid : 123 45 678
- * @note   class: COSC 2336, Summer 2021
+ * @author Michael Beaty
+ * @note   cwid : 50260848
+ * @note   class: COSC 2336, Fall 2021
  * @note   ide  : VSCode Server 3.9.3, Gnu Development Tools
  * @note   assg : Assignment Sorting and Searching
- * @date   June 1, 2021
+ * @date   9/27/21
  *
  * Implementations of a List of strings ADT.  Sort of a preview
  * of some of the data structures and abstract data types we
@@ -101,6 +101,55 @@ List::List(const List& list)
   }
 }
 
+/** @brief sub-List constructor
+ *
+ * Provide a sub-List constructor for the List class.  A sub-List
+ * constructor will be invoked whenver you assign a continuous range
+ * of indexes of a List to another List.
+ *
+ * @param list The other List type we are to make a copy of in this
+ *    constructor.
+ *
+ * @param start this is the value for the starting index of the List
+ *    range to be assigned
+ *
+ * @param end this is the value for the ending index of the List
+ *    range to be assigned. This value will be included in the sub-List.
+ *
+ * @throws ListMemoryBoundsException if a request for an index beyond
+ *   the end of the List (or less than 0) is made.
+ */
+List::List(const List& list, int start, int end)
+{
+  if (end < 0 || start < 0)
+  {
+    ostringstream out;
+    out << "Error: illegal sub-List size declaration, tried to start sub-List at: " << start << " and end sub-List at: " << end;
+
+    throw ListMemoryBoundsException(out.str());
+  }
+
+  if (start >= list.size || end >= list.size)
+  {
+    ostringstream out;
+    out << "Error: illegal sub-List size declaration, sub-List indexes were at, " << endl
+        << "\tstart: " << start << " and end: " << end << endl
+        << "\twith parent List size being: " << list.size << endl
+        << endl;
+
+    throw ListMemoryBoundsException(out.str());
+  }
+
+  size = end - start;
+
+  values = new string[++size];
+
+  for (int index = 0; index < size; index++)
+  {
+    values[index] = list.values[index + start];
+  }
+}
+
 /** @brief Class destructor
  *
  * Destructor for the List class.  A List may (or may not) have
@@ -115,6 +164,157 @@ List::~List()
   {
     delete[] values;
   }
+}
+
+/** @brief merge to Lists into this one
+ *
+ * This is a function that will merge to Lists into this list.
+ * Values from the other Lists will be merged into this list
+ * in accending order, assming the inputted Lists are sorted.
+ *
+ * @param lower This is a List of the lower values to be merged
+ *
+ * @param upper This is a List of the upper values to be merged
+ *
+ * @throws ListMemoryBoundsException if the sizes of the upper and
+ *    lower Lists are greater than this List.
+ */
+void List::merge(const List& lower, const List& upper)
+{
+  if (lower.size + upper.size > this->size)
+  {
+    ostringstream out;
+
+    throw ListMemoryBoundsException(out.str());
+  }
+
+  int lowerIndex = 0, upperIndex = 0;
+
+  for (int index = 0; index < this->size; index++)
+  {
+    if (lowerIndex < lower.size && upperIndex < upper.size)
+    {
+      if (lower.getAtIndex(lowerIndex) < upper.getAtIndex(upperIndex))
+      {
+        this->operator[](index) = lower.getAtIndex(lowerIndex);
+        lowerIndex++;
+      }
+      else
+      {
+        this->operator[](index) = upper.getAtIndex(upperIndex);
+        upperIndex++;
+      }
+    }
+    else if (lowerIndex >= lower.size && upperIndex < upper.size)
+    {
+      this->operator[](index) = upper.getAtIndex(upperIndex);
+      upperIndex++;
+    }
+    else if (upperIndex >= upper.size && lowerIndex < lower.size)
+    {
+      this->operator[](index) = lower.getAtIndex(lowerIndex);
+      lowerIndex++;
+    }
+  }
+}
+
+/** @brief merge sort function
+ *
+ * This function sorts this List using the Merge Sort algorithm
+ */
+void List::sort()
+{
+  if (this->size > 1)
+  {
+    List lowerTemp = List(*this, 0, this->size / 2 - 1);
+    List upperTemp = List(*this, this->size / 2, this->size - 1);
+
+    lowerTemp.sort();
+    upperTemp.sort();
+
+    this->merge(lowerTemp, upperTemp);
+  }
+}
+
+/** @brief binary search with range
+ *
+ * This function uses the Binary Search algorithm to find a
+ * value in this List
+ *
+ * @param find std::string value to be found in this List
+ *
+ * @param start begining index of the search
+ *
+ * @param end ending index of the search. This index will be included.
+ *
+ * @returns the index of the found value. If the value wasnt found
+ *    this function returns -1.
+ */
+int List::search(const std::string find, int start, int end)
+{
+  if (this->size <= 0 || start > end)
+  {
+    return -1;
+  }
+
+  int midpoint = (end - start) / 2 + start;
+
+  if (this->operator[](midpoint) == find)
+  {
+    return midpoint;
+  }
+  else if (this->operator[](midpoint) < find)
+  {
+    return this->search(find, midpoint + 1, end);
+  }
+  else if (this->operator[](midpoint) > find)
+  {
+    return this->search(find, start, midpoint - 1);
+  }
+  else
+  {
+    return -1;
+  }
+}
+
+/** @brief checks if sorted
+ * 
+ * This function iteratively checks this List to see if it is sorted
+ * 
+ * @returns a boolean of if this List is sorted
+ */
+bool List::isSorted()
+{
+  for (int index = 0; index < this->size - 1; index++)
+  {
+    if (this->operator[](index) > this->operator[](index + 1))
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/** @brief binary search
+ *
+ * This function uses the Binary Search algorithm to find a
+ * value in this List. This function will also sort the List
+ * if it hasnt been already.
+ *
+ * @param find std::string value to be found in this List
+ * 
+ * @returns the index of the found value. If the value wasnt found
+ *    this function returns -1.
+ */
+int List::search(std::string find)
+{
+  if (!this->isSorted())
+  {
+    this->sort();
+  }
+
+  return this->search(find, 0, this->size - 1);
 }
 
 /** @brief Size accessor
@@ -194,6 +394,19 @@ string& List::operator[](int index)
   }
 
   // otherwise it is safe to return the reference to this value
+  return values[index];
+}
+
+/** @brief getter for const Lists
+ *
+ * This method returns a copy of the value at the given index
+ *
+ * @param index index location to be returned
+ *
+ * @returns a std::string
+ */
+string List::getAtIndex(int index) const
+{
   return values[index];
 }
 
